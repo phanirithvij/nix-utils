@@ -24,29 +24,15 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          hydra-build-status = pkgs.python3Packages.buildPythonApplication {
+          hydra-build-status = pkgs.buildGoModule {
             pname = "hydra-build-status";
-            version = "0-unstable";
-            format = "other";
-
+            version = "0.2.0";
             src = ./.;
-
-            dependencies = with pkgs.python3Packages; [
-              requests
-              beautifulsoup4
-            ];
-
-            dontBuild = true;
-            dontUnpack = true;
-
-            installPhase = ''
-              runHook preInstall
-              install -D ${./hydra-build-status.py} $out/bin/hydra-build-status
-              runHook postInstall
-            '';
+            vendorHash = null;
+            env.CGO_ENABLED = 0;
 
             meta = {
-              description = "Report last Hydra build status for given platforms and packages";
+              description = "Report last Hydra build status for given platforms and packages with zero-DoS cache pre-checking";
               homepage = "https://github.com/imincik/nix-utils";
               license = pkgs.lib.licenses.mit;
               mainProgram = "hydra-build-status";
